@@ -2,4 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Actioneer\Actioneer.csproj" />
+  </ItemGroup>
 </Project>
