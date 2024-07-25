@@ -1,1 +1,7 @@
 .idea
+src/**/obj
+src/**/bin
+examples/**/obj
+examples/**/bin
+tests/**/obj
+tests/**/bin
