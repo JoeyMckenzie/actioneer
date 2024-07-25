@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "p/dwTh3zziOjH0G65BFkpurBQP+wCIWbt18lGFxyDF+IySTUZN18BNpc1OIIFwbzNZc6sh3HqmTEk8PVnpV1yg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\P12BAE7\\source\\repos\\actioneer\\examples\\Actioneer.Simple\\Actioneer.Simple.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\P12BAE7\\.nuget\\packages\\csharpier.msbuild\\0.28.2\\csharpier.msbuild.0.28.2.nupkg.sha512"
+  ],
+  "logs": []
+}

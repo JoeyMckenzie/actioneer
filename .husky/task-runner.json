@@ -1,0 +1,119 @@
+{
+    "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+    "tasks": [
+        {
+            "name": "run-formatter",
+            "command": "dotnet",
+            "args": [
+                "csharpier",
+                "."
+            ],
+            "include": [
+                "**/*.cs"
+            ]
+        },
+        {
+            "name": "run-linter",
+            "group": "pre-commit",
+            "command": "dotnet",
+            "args": [
+                "csharpier",
+                "${staged}"
+            ],
+            "include": [
+                "**/*.cs"
+            ]
+        },
+        {
+            "name": "commit-message-linter",
+            "group": "commit-msg",
+            "command": "dotnet",
+            "args": [
+                "husky",
+                "exec",
+                ".husky/csx/commit-lint.csx",
+                "--args",
+                "${args}"
+            ]
+        },
+        {
+            "name": "run-linter-checks",
+            "group": "pre-push",
+            "command": "dotnet",
+            "args": [
+                "csharpier",
+                "${staged}",
+                "--check"
+            ],
+            "include": [
+                "**/*.cs"
+            ]
+        },
+        {
+            "name": "run-tests",
+            "group": "pre-push",
+            "command": "dotnet",
+            "args": [
+                "test"
+            ]
+        },
+        {
+            "name": "build-source-code",
+            "group": "pre-push",
+            "command": "dotnet",
+            "args": [
+                "build"
+            ]
+        },
+        {
+            "name": "stop-docker-container",
+            "group": "rebuild-image",
+            "command": "docker",
+            "args": ["stop", "risk_score_service"]
+        },
+        {
+            "name": "remove-docker-container",
+            "group": "rebuild-image",
+            "command": "docker",
+            "args": ["rm", "risk_score_service"]
+        },
+        {
+            "name": "build-docker-container",
+            "group": "build-image",
+            "command": "docker",
+            "args": [
+                "build",
+                "-t",
+                "risk_score_service:latest",
+                "."
+            ]
+        },
+        {
+            "name": "build-docker-container",
+            "group": "build-image",
+            "command": "docker",
+            "args": [
+                "build",
+                "-t",
+                "risk_score_service:latest",
+                "."
+            ]
+        },
+        {
+            "name": "run-docker-container",
+            "group": "build-image",
+            "command": "docker",
+            "args": [
+                "run",
+                "-d",
+                "--name",
+                "risk_score_service",
+                "-p",
+                "8080:8080",
+                "--env-file",
+                "./.env",
+                "risk_score_service:latest"
+            ]
+        }
+    ]
+}
