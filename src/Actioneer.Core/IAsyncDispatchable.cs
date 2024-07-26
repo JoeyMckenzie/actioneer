@@ -9,7 +9,7 @@ public interface IAsyncDispatchable
     /// Executes the action logic with payload information.
     /// </summary>
     /// <returns>Typed result information.</returns>
-    public Task Execute();
+    public Task ExecuteAsync(CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -21,5 +21,5 @@ public interface IAsyncDispatchable<TReturn>
     /// Executes the action logic with payload information.
     /// </summary>
     /// <returns>Typed result information.</returns>
-    public Task<TReturn> Execute();
+    public Task<TReturn> ExecuteAsync(CancellationToken cancellationToken = default);
 }

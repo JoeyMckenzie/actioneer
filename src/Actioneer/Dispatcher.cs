@@ -1,14 +1,13 @@
-﻿using System.Collections.Concurrent;
-using System.Reflection;
+﻿using System.Reflection;
 using Actioneer.Core;
 
 namespace Actioneer;
 
-/// <inheritdoc />
-public class Dispatcher : IDispatcher
+/// <inheritdoc cref="IDispatcher"/>
+public class Dispatcher : ActioneerDispatcherBase, IDispatcher
 {
-    private readonly ConcurrentDictionary<Type, Assembly> _typeAssemblyCache = new();
-    private readonly ConcurrentDictionary<Type, Type?> _sideEffectCache = new();
+    private readonly Dictionary<Type, Assembly> _typeAssemblyCache = new();
+    private readonly Dictionary<Type, Type?> _sideEffectCache = new();
 
     /// <inheritdoc />
     public void Dispatch(IDispatchable? action)
@@ -17,19 +16,24 @@ public class Dispatcher : IDispatcher
 
         // Check for any side effects associated to the action
         var dispatchedActionType = action.GetType();
-        var assembly = _typeAssemblyCache.GetOrAdd(
-            dispatchedActionType,
-            Assembly.GetAssembly(action.GetType())
-                ?? throw new NullReferenceException("No assembly found associated to action type.")
-        );
+
+        if (!_typeAssemblyCache.TryGetValue(dispatchedActionType, out var assembly))
+        {
+            assembly =
+                Assembly.GetAssembly(action.GetType())
+                ?? throw new NullReferenceException("No assembly found associated to action type.");
+            _typeAssemblyCache[dispatchedActionType] = assembly;
+        }
 
         var types = assembly.GetTypes();
-        var associatedSideEffect = _sideEffectCache.GetOrAdd(
-            dispatchedActionType,
-            types.FirstOrDefault(t =>
+
+        if (!_sideEffectCache.TryGetValue(dispatchedActionType, out var associatedSideEffect))
+        {
+            associatedSideEffect = types.FirstOrDefault(t =>
                 t.GetInterfaces().Any(i => ActionHasCorrespondingSideEffect(i, dispatchedActionType))
-            )
-        );
+            );
+            _sideEffectCache[dispatchedActionType] = associatedSideEffect;
+        }
 
         // Invoke the action
         action.Execute();
@@ -52,17 +56,24 @@ public class Dispatcher : IDispatcher
 
         // Check for any side effects associated to the action
         var dispatchedActionType = action.GetType();
-        var assembly = Assembly.GetAssembly(action.GetType());
 
-        if (assembly is null)
+        if (!_typeAssemblyCache.TryGetValue(dispatchedActionType, out var assembly))
         {
-            throw new NullReferenceException($"No assembly was found associated to action type {dispatchedActionType}");
+            assembly =
+                Assembly.GetAssembly(action.GetType())
+                ?? throw new NullReferenceException("No assembly found associated to action type.");
+            _typeAssemblyCache[dispatchedActionType] = assembly;
         }
 
         var types = assembly.GetTypes();
-        var associatedSideEffect = types.FirstOrDefault(t =>
-            t.GetInterfaces().Any(i => ActionHasCorrespondingSideEffect(i, dispatchedActionType))
-        );
+
+        if (!_sideEffectCache.TryGetValue(dispatchedActionType, out var associatedSideEffect))
+        {
+            associatedSideEffect = types.FirstOrDefault(t =>
+                t.GetInterfaces().Any(i => ActionHasCorrespondingSideEffect(i, dispatchedActionType))
+            );
+            _sideEffectCache[dispatchedActionType] = associatedSideEffect;
+        }
 
         // Invoke the action
         var result = action.Execute();
@@ -77,12 +88,5 @@ public class Dispatcher : IDispatcher
         runMethod?.Invoke(sideEffectInstance, [action]);
 
         return result;
-    }
-
-    private static bool ActionHasCorrespondingSideEffect(Type i, Type dispatchedActionType)
-    {
-        return i.IsGenericType
-            && i.GetGenericTypeDefinition() == typeof(ISideEffect<>)
-            && i.GenericTypeArguments.Contains(dispatchedActionType);
     }
 }

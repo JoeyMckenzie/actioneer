@@ -3,10 +3,10 @@
 /// <summary>
 /// A side effect contract for running tasks when certain actions are dispatched.
 /// </summary>
-public interface ISideEffect<in TAction>
+public interface IAsyncSideEffect<in TAction>
 {
     /// <summary>
     /// Runs the side effect associated to the action.
     /// </summary>
-    void Run(TAction action);
+    Task RunAsync(TAction action, CancellationToken cancellationToken = default);
 }

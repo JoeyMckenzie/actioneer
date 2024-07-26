@@ -2,10 +2,32 @@
 
 namespace Actioneer.Simple.Actions;
 
-public class PingAsync : IAsyncDispatchable<string>
+public class PingAsync : IAsyncDispatchable
 {
-    public Task<string> Execute()
+    public Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        return Task.FromResult("Pong");
+        Console.WriteLine("Pong");
+
+        return Task.CompletedTask;
+    }
+}
+
+public class NotifyPongAsyncEffect : IAsyncSideEffect<PingAsync>
+{
+    public Task RunAsync(PingAsync action, CancellationToken cancellationToken = default)
+    {
+        Console.WriteLine("Ping ponged just now!");
+
+        return Task.CompletedTask;
+    }
+}
+
+public class AnotherNotifyPongAsyncEffect : IAsyncSideEffect<PingAsync>
+{
+    public Task RunAsync(PingAsync action, CancellationToken cancellationToken = default)
+    {
+        Console.WriteLine("Ping ponged just now... just letting you know!");
+
+        return Task.CompletedTask;
     }
 }

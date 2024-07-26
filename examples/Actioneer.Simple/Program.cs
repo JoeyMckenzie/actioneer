@@ -5,11 +5,12 @@ var sayHelloAction = new SayHello("Gandalf");
 var ping = new Ping();
 var asyncPing = new PingAsync();
 
-var dispatcher = new Dispatcher();
-var asyncDispatcher = new AsyncDispatcher();
-using var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+var actioneer = new Actioneer.Actioneer();
+using var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(120));
 
-dispatcher.Dispatch(sayHelloAction);
-dispatcher.Dispatch(sayHelloAction);
+actioneer.Dispatch(sayHelloAction);
+
+// dispatcher.Dispatch(sayHelloAction);
 // var ponged = dispatcher.Dispatch(ping);
-// var awaitedPong = await asyncDispatcher.DispatchAsync(asyncPing, tokenSource.Token);
+// var pongeds = dispatcher.Dispatch(ping);
+await actioneer.DispatchAsync(asyncPing, tokenSource.Token);
