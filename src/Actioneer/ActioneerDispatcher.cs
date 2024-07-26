@@ -3,7 +3,7 @@
 namespace Actioneer;
 
 /// <inheritdoc />
-public class Actioneer : IActioneer
+public class ActioneerDispatcher : IActioneerDispatcher
 {
     private readonly Lazy<IDispatcher> _lazyDispatcherInstance = new(() => new Dispatcher());
     private readonly Lazy<IAsyncDispatcher> _lazyAsyncDispatcherInstance = new(() => new AsyncDispatcher());

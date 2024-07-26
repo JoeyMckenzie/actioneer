@@ -1,3 +1,4 @@
+using Actioneer;
 using Actioneer.Api.Actions;
 using Actioneer.Core;
 
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IActioneer, Actioneer.Actioneer>();
+builder.Services.AddSingleton<IActioneerDispatcher, ActioneerDispatcher>();
 
 var app = builder.Build();
 
@@ -22,7 +23,7 @@ app.UseHttpsRedirection();
 
 app.MapGet(
         "/weatherforecast",
-        async (IActioneer actioneer, CancellationToken cancellationToken) =>
+        async (IActioneerDispatcher actioneer, CancellationToken cancellationToken) =>
             await actioneer.DispatchAsync(new GetWeatherForecast(), cancellationToken)
     )
     .WithName("GetWeatherForecast")

@@ -3,7 +3,7 @@
 /// <summary>
 /// Primary actioneer orchestrator, responsible for handling and dispatching actions to the library for callers.
 /// </summary>
-public interface IActioneer
+public interface IActioneerDispatcher
 {
     /// <summary>
     /// Dispatches a synchronous fire-and-forget action.

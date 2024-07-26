@@ -51,7 +51,7 @@ public class AsyncDispatcher : ActioneerDispatcherBase, IAsyncDispatcher
             {
                 // Invoke the side effect, if detected
                 var sideEffectInstance = Activator.CreateInstance(sideEffect);
-                var runMethod = sideEffectInstance?.GetType().GetMethod("Run");
+                var runMethod = sideEffectInstance?.GetType().GetMethod(nameof(ISideEffect<IAsyncDispatchable>.Run));
                 runMethod?.Invoke(sideEffectInstance, [action]);
             }
         }
@@ -63,7 +63,9 @@ public class AsyncDispatcher : ActioneerDispatcherBase, IAsyncDispatcher
             {
                 // Invoke the side effect, if detected
                 var sideEffectInstance = Activator.CreateInstance(asyncSideEffect);
-                var runMethod = sideEffectInstance?.GetType().GetMethod("RunAsync");
+                var runMethod = sideEffectInstance
+                    ?.GetType()
+                    .GetMethod(nameof(IAsyncSideEffect<IAsyncDispatchable>.RunAsync));
                 await Task.Run(
                     () => runMethod?.Invoke(sideEffectInstance, [action, cancellationToken]),
                     cancellationToken
@@ -115,7 +117,9 @@ public class AsyncDispatcher : ActioneerDispatcherBase, IAsyncDispatcher
             {
                 // Invoke the side effect, if detected
                 var sideEffectInstance = Activator.CreateInstance(sideEffect);
-                var runMethod = sideEffectInstance?.GetType().GetMethod("Run");
+                var runMethod = sideEffectInstance
+                    ?.GetType()
+                    .GetMethod(nameof(ISideEffect<IAsyncDispatchable<TReturn>>.Run));
                 runMethod?.Invoke(sideEffectInstance, [action]);
             }
         }
@@ -127,7 +131,9 @@ public class AsyncDispatcher : ActioneerDispatcherBase, IAsyncDispatcher
             {
                 // Invoke the side effect, if detected
                 var sideEffectInstance = Activator.CreateInstance(asyncSideEffect);
-                var runMethod = sideEffectInstance?.GetType().GetMethod("RunAsync");
+                var runMethod = sideEffectInstance
+                    ?.GetType()
+                    .GetMethod(nameof(IAsyncSideEffect<IAsyncDispatchable<TReturn>>.RunAsync));
                 await Task.Run(
                     () => runMethod?.Invoke(sideEffectInstance, [action, cancellationToken]),
                     cancellationToken
