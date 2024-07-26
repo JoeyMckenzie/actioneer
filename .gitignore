@@ -5,3 +5,7 @@ examples/**/obj
 examples/**/bin
 tests/**/obj
 tests/**/bin
+
+node_modules/
+docs/.vitepress/cache
+docs/.vitepress/dist
