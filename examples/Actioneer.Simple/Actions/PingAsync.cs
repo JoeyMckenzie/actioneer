@@ -12,6 +12,14 @@ public class PingAsync : IAsyncDispatchable
     }
 }
 
+public class NotifyPongEffect : ISideEffect<PingAsync>
+{
+    public void Run(PingAsync action)
+    {
+        Console.WriteLine("Ponged... but sync!");
+    }
+}
+
 public class NotifyPongAsyncEffect : IAsyncSideEffect<PingAsync>
 {
     public Task RunAsync(PingAsync action, CancellationToken cancellationToken = default)

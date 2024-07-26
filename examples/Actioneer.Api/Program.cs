@@ -1,4 +1,5 @@
 using Actioneer;
+using Actioneer.Api;
 using Actioneer.Api.Actions;
 using Actioneer.Core;
 
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IActioneerDispatcher, ActioneerDispatcher>();
+builder.Services.AddTransient<EchoService>();
 
 var app = builder.Build();
 
@@ -23,8 +25,11 @@ app.UseHttpsRedirection();
 
 app.MapGet(
         "/weatherforecast",
-        async (IActioneerDispatcher actioneer, CancellationToken cancellationToken) =>
-            await actioneer.DispatchAsync(new GetWeatherForecast(), cancellationToken)
+        async (
+            IActioneerDispatcher actioneer,
+            ILogger<GetWeatherForecast> logger,
+            CancellationToken cancellationToken
+        ) => await actioneer.DispatchAsync(new GetWeatherForecast(logger), cancellationToken)
     )
     .WithName("GetWeatherForecast")
     .WithOpenApi();

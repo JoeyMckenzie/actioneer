@@ -59,6 +59,8 @@ public class AsyncDispatcher : ActioneerDispatcherBase, IAsyncDispatcher
         // Run any associated async side effects for the action
         if (associatedAsyncSideEffect is not null && associatedAsyncSideEffect.Count > 0)
         {
+            ICollection<Task> invokableSideEffects = [];
+
             foreach (var asyncSideEffect in associatedAsyncSideEffect)
             {
                 // Invoke the side effect, if detected
@@ -66,11 +68,15 @@ public class AsyncDispatcher : ActioneerDispatcherBase, IAsyncDispatcher
                 var runMethod = sideEffectInstance
                     ?.GetType()
                     .GetMethod(nameof(IAsyncSideEffect<IAsyncDispatchable>.RunAsync));
-                await Task.Run(
+                var runnableSideEffect = Task.Run(
                     () => runMethod?.Invoke(sideEffectInstance, [action, cancellationToken]),
                     cancellationToken
                 );
+
+                invokableSideEffects.Add(runnableSideEffect);
             }
+
+            await Task.WhenAll(invokableSideEffects);
         }
     }
 

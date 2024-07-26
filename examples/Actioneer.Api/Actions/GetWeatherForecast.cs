@@ -3,7 +3,7 @@ using Actioneer.Core;
 
 namespace Actioneer.Api.Actions;
 
-public class GetWeatherForecast : IAsyncDispatchable<WeatherForecast[]>
+public class GetWeatherForecast(ILogger<GetWeatherForecast> logger) : IAsyncDispatchable<WeatherForecast[]>
 {
     private readonly string[] _summaries =
     [
@@ -21,6 +21,8 @@ public class GetWeatherForecast : IAsyncDispatchable<WeatherForecast[]>
 
     public async Task<WeatherForecast[]> ExecuteAsync(CancellationToken cancellationToken = default)
     {
+        logger.LogInformation("Retrieving weather forecast");
+
         // Act like we're doing some work...
         await Task.Delay(TimeSpan.FromMilliseconds(300), cancellationToken);
 
